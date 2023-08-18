@@ -7,6 +7,7 @@ namespace GLWrapper
 {
 	class GLWindow
 	{
+		friend class GLShader;
 		private:
 			//const unsigned int SCR_WIDTH, SCR_HEIGHT;
 			GLFWwindow* window;
@@ -18,10 +19,21 @@ namespace GLWrapper
 			void loadGlad();
 
 		public:
-			void run();
+			
 			GLWindow(unsigned int width, unsigned int height, const char* title);		//Constructor
 			~GLWindow();	//Destructor	
 
+	};
+
+	class GLShader
+	{
+		private:
+			//const char* vertexShaderSource, fragmentShaderSource;
+			//unsigned int shaderDeletion(unsigned int vertexShader, unsigned int fragmentShader);
+			void run();
+		public:
+			GLShader();		//Constructor
+			~GLShader();	//Destructor
 	};
 	//TODO implement other classes
 }
