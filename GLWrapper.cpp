@@ -9,6 +9,19 @@ namespace GLWrapper
 		loadGlad();
 	}
 
+	//// process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
+
+	void GLWindow::processInput()
+	{
+		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+			glfwSetWindowShouldClose(window, true);
+	}
+	
+	int GLWindow::isClosed()
+	{
+		return glfwWindowShouldClose(window);
+	}
+
 	void GLWindow::initialize()
 	{
 		glfwInit();
@@ -28,7 +41,7 @@ namespace GLWrapper
 
 	GLFWwindow* GLWindow::createWindow(unsigned int width, unsigned int height, const char* title)
 	{
-		GLFWwindow* window = glfwCreateWindow(width, height, title, NULL, NULL);
+		window = glfwCreateWindow(width, height, title, NULL, NULL);
 		if (window == NULL)
 		{
 			std::cout << "Failed to create GLFW window" << std::endl;
@@ -56,11 +69,39 @@ namespace GLWrapper
 		glfwTerminate();
 	}
 
+	//**********************************************************
 
 	GLShader::GLShader()
 	{
-		//TODO Define shaderSources here?
+		//TODO: Define shaderSources here?
 		run();
+		vertex();
+	}
+
+	void GLShader::setColor(float R, float G, float B, float O)
+	{
+		// render
+		glClearColor(R,G,B,O);
+		glClear(GL_COLOR_BUFFER_BIT);
+	}
+
+	void GLShader::draw()
+	{
+		// draw our first triangle
+		glUseProgram(shaderProgram);
+		glBindVertexArray(VAO);
+
+		// seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+
+		// glBindVertexArray(0); // no need to unbind it every time 
+	}
+
+	void GLWindow::swapBuff_pollEvent()
+	{
+		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
+		glfwSwapBuffers(window);
+		glfwPollEvents();
 	}
 
 	void GLShader::run()
@@ -105,7 +146,7 @@ namespace GLWrapper
 			throw std::runtime_error("Failed to compile Fragment Shader" + std::string(infoLog));
 		}
 		// link shaders
-		unsigned int shaderProgram = glCreateProgram();
+		shaderProgram = glCreateProgram();
 		glAttachShader(shaderProgram, vertexShader);
 		glAttachShader(shaderProgram, fragmentShader);
 		glLinkProgram(shaderProgram);
@@ -119,7 +160,38 @@ namespace GLWrapper
 		}
 		glDeleteShader(vertexShader);
 		glDeleteShader(fragmentShader);
+	}
+	
+	//TODO: confirm placement of deleteShaders -above
+	//TODO: add options if vertices are to be modified -below
+	// set up vertex data (and buffer(s)) and configure vertex attributes
 
+	void GLShader::vertex()
+	{		
+		float vertices[] = 
+		{
+			-0.5f, -0.5f, 0.0f, // left  
+			 0.5f, -0.5f, 0.0f, // right 
+			 0.0f,  0.5f, 0.0f  // top   
+		};
+
+		glGenVertexArrays(1, &VAO);
+		glGenBuffers(1, &VBO);
+		// bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
+		glBindVertexArray(VAO);
+
+		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(0);
+
+		// note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+		// You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
+		// VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
+		glBindVertexArray(0);		
 	}
 
 	GLShader::~GLShader()
@@ -127,5 +199,20 @@ namespace GLWrapper
 		//TODO Cleanup here?
 	}
 
-}
+	void GLShader::polygon()
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
 
+	
+	//	//// optional: de-allocate all resources once they've outlived their purpose:
+	//	//// ------------------------------------------------------------------------
+	//	//glDeleteVertexArrays(1, &VAO);
+	//	//glDeleteBuffers(1, &VBO);
+	//	//glDeleteProgram(shaderProgram);
+
+	//	//// glfw: terminate, clearing all previously allocated GLFW resources.
+	//	//// ------------------------------------------------------------------
+	//	//glfwTerminate();
+	//	//return 0;
+}
