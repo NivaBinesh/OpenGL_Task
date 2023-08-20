@@ -1,33 +1,42 @@
+/**
+* @file GLWrapper.cpp
+* @brief Implementation of GLWrapper.
+* @author Niva
+*/
+
 #include "GLWrapper.h"
-	
+
 namespace GLWrapper
 {
+	//---------------------Class GLWindow implementations-----------------------------
+
 	GLWindow::GLWindow(unsigned int width, unsigned int height, const char* title)
 	{
-		initialize();
+		initializeGlfw();
 		createWindow(width, height, title);
-		loadGlad();
+	}
+	
+	GLWindow::GLWindow()
+	{
+		initializeGlfw();
+		createWindow(800, 600, "My Triangle");
 	}
 
-	//// process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
+	int GLWindow::isClosed()
+	{
+		return glfwWindowShouldClose(window);
+	}
 
 	void GLWindow::processInput()
 	{
 		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 			glfwSetWindowShouldClose(window, true);
 	}
-	
-	int GLWindow::isClosed()
-	{
-		return glfwWindowShouldClose(window);
-	}
 
-	void GLWindow::initialize()
+	void GLWindow::swapBufferAndPollEvent()
 	{
-		glfwInit();
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+		glfwSwapBuffers(window);
+		glfwPollEvents();
 	}
 
 	void GLWindow::framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -37,7 +46,13 @@ namespace GLWrapper
 		glViewport(0, 0, width, height);
 	}
 
-	// glfw window creation
+	void GLWindow::initializeGlfw()
+	{
+		glfwInit();
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	}
 
 	GLFWwindow* GLWindow::createWindow(unsigned int width, unsigned int height, const char* title)
 	{
@@ -46,36 +61,42 @@ namespace GLWrapper
 		{
 			std::cout << "Failed to create GLFW window" << std::endl;
 			glfwTerminate();
-			//return -1;
 			throw std::runtime_error("Failed to create GLFW window");
 		}
 		glfwMakeContextCurrent(window);
 		glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 	}
 
-	// glad: load all OpenGL function pointers
-
-	void GLWindow::loadGlad()
-	{
-		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-		{
-			std::cout << "Failed to initialize GLAD" << std::endl;
-			//return -1;
-			throw std::runtime_error("Failed to initialize GLAD");
-		}
-	}
 	GLWindow::~GLWindow()
 	{
+		// glfw: terminate, clearing all previously allocated GLFW resources
 		glfwTerminate();
 	}
 
-	//**********************************************************
+	//---------------------Class GLShader implementations-----------------------------
+
+	GLShader::GLShader(float r, float g, float b, float a)
+	{
+		loadGlad();
+		run(r,g,b,a);
+		vertex();
+	}
 
 	GLShader::GLShader()
 	{
-		//TODO: Define shaderSources here?
-		run();
+		loadGlad();
+		run(0.0,0.0,0.0,1.0);
 		vertex();
+	}
+	
+	void GLShader::loadGlad()
+	{
+		// glad: load all OpenGL function pointers
+		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+		{
+			std::cout << "Failed to initialize GLAD" << std::endl;
+			throw std::runtime_error("Failed to initialize GLAD");
+		}
 	}
 
 	void GLShader::setColor(float R, float G, float B, float O)
@@ -85,7 +106,7 @@ namespace GLWrapper
 		glClear(GL_COLOR_BUFFER_BIT);
 	}
 
-	void GLShader::draw()
+	void GLShader::drawTriangle()
 	{
 		// draw our first triangle
 		glUseProgram(shaderProgram);
@@ -97,28 +118,24 @@ namespace GLWrapper
 		// glBindVertexArray(0); // no need to unbind it every time 
 	}
 
-	void GLWindow::swapBuff_pollEvent()
+	void GLShader::run(float r, float g,float b, float o)
 	{
-		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
-		glfwSwapBuffers(window);
-		glfwPollEvents();
-	}
-
-	void GLShader::run()
-	{
-
 		const char* vertexShaderSource = "#version 330 core\n"
 			"layout (location = 0) in vec3 aPos;\n"
 			"void main()\n"
 			"{\n"
 			"   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
 			"}\0";
-		const char* fragmentShaderSource = "#version 330 core\n"
+
+		std::string temp = "#version 330 core\n"
 			"out vec4 FragColor;\n"
 			"void main()\n"
 			"{\n"
-			"   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+			"   FragColor = vec4(" + std::to_string(r) + "f, " + std::to_string(g) + "f, " + std::to_string(b) + "f, " + std::to_string(o) + "f);\n"
 			"}\n\0";
+
+		const char* fragmentShaderSource = temp.c_str();
+
 		// vertex shader
 		unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
 		glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
@@ -161,10 +178,6 @@ namespace GLWrapper
 		glDeleteShader(vertexShader);
 		glDeleteShader(fragmentShader);
 	}
-	
-	//TODO: confirm placement of deleteShaders -above
-	//TODO: add options if vertices are to be modified -below
-	// set up vertex data (and buffer(s)) and configure vertex attributes
 
 	void GLShader::vertex()
 	{		
@@ -196,23 +209,14 @@ namespace GLWrapper
 
 	GLShader::~GLShader()
 	{
-		//TODO Cleanup here?
+		// optional: de-allocate all resources once they've outlived their purpose
+		glDeleteVertexArrays(1, &VAO);
+		glDeleteBuffers(1, &VBO);
+		glDeleteProgram(shaderProgram);
 	}
 
 	void GLShader::polygon()
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
-
-	
-	//	//// optional: de-allocate all resources once they've outlived their purpose:
-	//	//// ------------------------------------------------------------------------
-	//	//glDeleteVertexArrays(1, &VAO);
-	//	//glDeleteBuffers(1, &VBO);
-	//	//glDeleteProgram(shaderProgram);
-
-	//	//// glfw: terminate, clearing all previously allocated GLFW resources.
-	//	//// ------------------------------------------------------------------
-	//	//glfwTerminate();
-	//	//return 0;
 }
