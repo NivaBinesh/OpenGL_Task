@@ -1,44 +1,165 @@
-#pragma once
-#include<glad/glad.h>
-#include<GLFW/glfw3.h>
-#include <iostream>
+/**
+ * @file GLWrapper.h
+ * @brief A simple wrapper for OpenGL functions in C++ to implement same functionalities as 'Hello Triangle' example.
+ * @author Niva
+ */
 
-namespace GLWrapper 
+#pragma once
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#include <iostream>
+#include <string>
+
+namespace GLWrapper
 {
+	/**
+	 * @brief Class GLWindow handles the OpenGL window creation
+	 */
 	class GLWindow
 	{
-		//friend class GLShader;
-		private:
-			//const unsigned int SCR_WIDTH, SCR_HEIGHT;
-			GLFWwindow* window;	
-			static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-			void initialize();
-			GLFWwindow* createWindow(unsigned int width, unsigned int height, const char* title);
-			void loadGlad();
+	public:
+		/**
+		* @brief Construct a GLWindow object.
+		*
+		* @param width Width of the window.
+		* @param height Height of the window.
+		* @param title Title of the window.
+		*/
+		GLWindow(unsigned int width, unsigned int height, const char* title);
 
-		public:
-			int isClosed();
-			void processInput();
-			void swapBuff_pollEvent();
-			GLWindow(unsigned int width, unsigned int height, const char* title);		//Constructor
-			~GLWindow();	//Destructor	
+		/**
+		* @brief Construct a GLWindow object with default values.
+		*
+		* Default Values : width:800, height:600, title:"My Triangle"
+		*/
+		GLWindow();
+
+
+		/**
+		* @brief Destroy GLWindow object.
+		*/
+		~GLWindow();
+
+		/**
+		* @brief Checks if the window is closed.
+		*
+		* @return Returns 1 if the window is closed, 0 otherwise.
+		*/
+		int isClosed();
+
+		/**
+		* @brief Process all input.
+		*
+		* Query Window(GLFW) for relevant key presses/releases and reacts accordingly.
+		*/
+		void processInput();
+
+		/**
+		 * @brief Swap buffers and poll IO events.
+		 *
+		 * This function swaps the front and back buffers of the window and
+		 * processes IO events such as keys pressed/released, mouse moved, etc.
+		 */
+		void swapBufferAndPollEvent();
+
+	private:
+		GLFWwindow* window;
+
+		/**
+		 * @brief Initialize GLFW and configure its properties.
+		 */
+		void initializeGlfw();
+
+		/**
+		 * @brief Create a new window.
+		 *
+		 * @param width Width of the window.
+		 * @param height Height of the window.
+		 * @param title Title of the window.
+		 * @return GLFWwindow* Pointer to the created GLFW window.
+		 */
+		GLFWwindow* createWindow(unsigned int width, unsigned int height, const char* title);	//glfw window creation
+
+		/**
+		 * @brief callback function whenever window size changes
+		 *
+		 * @param window Pointer to the window.
+		 * @param width New width of the viewport.
+		 * @param height New height of the viewport.
+		 */
+		static void framebuffer_size_callback(GLFWwindow* window, int width, int height);	// glfw: whenever the window size changed (by OS or user resize) this callback function executes
 
 	};
 
+	/**
+	 * @brief Class GLShader handles shader functionality
+	 */
 	class GLShader
 	{
-		private:
-			//const char* vertexShaderSource, fragmentShaderSource;
-			//unsigned int shaderDeletion(unsigned int vertexShader, unsigned int fragmentShader);
-			unsigned int shaderProgram, VAO, VBO;
-			void run();
-			void vertex();			
-			//void render(unsigned int shaderProgram, unsigned int VAO, unsigned int VBO);
-		public:
-			void polygon();
-			void setColor(float R, float G, float B, float O);
-			void draw();
-			GLShader();		//Constructor
-			~GLShader();	//Destructor
+	public:
+		/**
+		 * @brief Construct a GLShader object with a specified color.
+		 *
+		 * @param r Red component of the color.
+		 * @param g Green component of the color.
+		 * @param b Blue component of the color.
+		 * @param a Alpha component of the color.
+		 */
+		GLShader(float r, float g, float b, float a);
+
+		/**
+		 * @brief Construct a GLShader object with default color(Black).
+		 */
+		GLShader();
+
+		/**
+		 * @brief Destroy the GLShader object.
+		 */
+		~GLShader();
+
+		/**
+		 * @brief To Draw the wireframe polygon
+		 */
+		void polygon();
+
+		/**
+		 * @brief Set the background color.
+		 *
+		 * @param r Red component of the color.
+		 * @param g Green component of the color.
+		 * @param b Blue component of the color.
+		 * @param a Alpha component of the color.
+		 */
+		void setColor(float R, float G, float B, float A);
+
+		/**
+		 * @brief Draw the triangle.
+		 */
+		void drawTriangle();
+
+	private:
+		unsigned int shaderProgram, VAO, VBO;
+
+		/**
+		 * @brief Load Glad OpenGL function pointers.
+		 */
+		void loadGlad();
+
+		/**
+		 * @brief Render with the specified colors.
+		 *
+		 * @param r Red component of the color.
+		 * @param g Green component of the color.
+		 * @param b Blue component of the color.
+		 * @param a Alpha component of the color.
+		 */
+		void run(float r, float g, float b, float a);
+
+		/**
+		 * @brief Define the vertices.
+		 * 
+		 * set up vertex data (and buffer(s)) and configure vertex attributes.
+		 */
+		void vertex();
 	};
 }
