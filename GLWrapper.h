@@ -130,7 +130,7 @@ namespace GLWrapper
 		 * @param b Blue component of the color.
 		 * @param a Alpha component of the color.
 		 */
-		void setColor(float R, float G, float B, float A);
+		void setBackgroundColor(float R, float G, float B, float A);
 
 		/**
 		 * @brief Draw the triangle.

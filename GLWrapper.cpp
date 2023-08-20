@@ -99,7 +99,7 @@ namespace GLWrapper
 		}
 	}
 
-	void GLShader::setColor(float R, float G, float B, float O)
+	void GLShader::setBackgroundColor(float R, float G, float B, float O)
 	{
 		// render
 		glClearColor(R,G,B,O);
@@ -209,7 +209,7 @@ namespace GLWrapper
 
 	GLShader::~GLShader()
 	{
-		// optional: de-allocate all resources once they've outlived their purpose
+		//De-allocate all resources once they've outlived their purpose
 		glDeleteVertexArrays(1, &VAO);
 		glDeleteBuffers(1, &VBO);
 		glDeleteProgram(shaderProgram);

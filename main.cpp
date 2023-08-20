@@ -20,7 +20,7 @@ int main()
 	while (!w.isClosed())
 	{
 		w.processInput();
-		s.setColor(1.0f, 1.0f, 1.0f, 1.0f); //Set preferred background color in terms of R,G,B as first 3 parameters
+		s.setBackgroundColor(1.0f, 1.0f, 1.0f, 1.0f); //Set preferred background color in terms of R,G,B as first 3 parameters
 		s.drawTriangle();
 		w.swapBufferAndPollEvent();
 	}
