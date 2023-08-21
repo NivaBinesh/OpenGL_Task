@@ -34,7 +34,6 @@ namespace GLWrapper
 		*/
 		GLWindow();
 
-
 		/**
 		* @brief Destroy GLWindow object.
 		*/
@@ -78,17 +77,17 @@ namespace GLWrapper
 		 * @param title Title of the window.
 		 * @return GLFWwindow* Pointer to the created GLFW window.
 		 */
-		GLFWwindow* createWindow(unsigned int width, unsigned int height, const char* title);	//glfw window creation
+		GLFWwindow* createWindow(unsigned int width, unsigned int height, const char* title);
 
 		/**
 		 * @brief callback function whenever window size changes
+		 * (by OS or user resize), this callback function executes.
 		 *
 		 * @param window Pointer to the window.
 		 * @param width New width of the viewport.
 		 * @param height New height of the viewport.
 		 */
-		static void framebuffer_size_callback(GLFWwindow* window, int width, int height);	// glfw: whenever the window size changed (by OS or user resize) this callback function executes
-
+		static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 	};
 
 	/**
@@ -130,7 +129,7 @@ namespace GLWrapper
 		 * @param b Blue component of the color.
 		 * @param a Alpha component of the color.
 		 */
-		void setBackgroundColor(float R, float G, float B, float A);
+		void setBackgroundColor(float r, float g, float b, float a);
 
 		/**
 		 * @brief Draw the triangle.
