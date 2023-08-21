@@ -34,7 +34,7 @@ Before you start, make sure you have the following installed on your system:
 
 ## Documentation
 
-For the supported list of functions and their usage, please refer to the [`GLWrapper.h`](GLWrapper.h) header file. This file contains brief documentation for the classes and functions used.
+For the supported list of functions and their usage, please refer to the [`documentation`](GLWrapper.pdf). This file contains brief documentation for the classes and functions used.
 
 ## Installation
 
