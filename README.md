@@ -8,6 +8,7 @@ This is a simple C++ wrapper to implement OpenGL functionalities to encapsulate 
 - [Prerequisites](#prerequisites)
 - [Documentation](#documentation)
 - [Installation](#installation)
+- [Output](#output)
 
 ## Introduction
 
@@ -49,3 +50,13 @@ g++ main.cpp GLWrapper.cpp glad.c -o OpenGLApp -lglfw -ldl
 
 ./OpenGLApp
 ```
+
+## Output
+
+1.Sample output with customized window and object color.
+
+![`Output 1`](output.PNG)
+
+2.Sample output with wireframe polygon enabled.
+
+![`Output 2`](Polygon.PNG)
