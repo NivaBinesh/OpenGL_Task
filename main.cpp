@@ -9,8 +9,8 @@
 
 int main()
 {
-	//GLWrapper::GLWindow w;	//Creates default GLWindow Object (with the dim. W*H:800*600 and title: "My Triangle")
-	GLWrapper::GLWindow w(800, 600, "My_Triangle");	//Creates GLWindow Object with specified dimensions and title
+	//GLWrapper::GLWindow w;	//Creates default GLWindow Object (with the dim. W*H:800*600 and title: "Hello Triangle")
+	GLWrapper::GLWindow w(800, 600, "My Triangle");	//Creates GLWindow Object with specified dimensions and title
 
 	//GLWrapper::GLShader s;	//Creates a default GLShader object for a Black triangle
 	GLWrapper::GLShader s(0.6f,0.1f,0.9f,1.0);	//Creates Shader Object with preferred RGB and Alpha values

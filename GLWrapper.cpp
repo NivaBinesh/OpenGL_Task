@@ -19,7 +19,7 @@ namespace GLWrapper
 	GLWindow::GLWindow()
 	{
 		initializeGlfw();
-		createWindow(800, 600, "My Triangle");
+		createWindow(800, 600, "Hello Triangle");
 	}
 
 	int GLWindow::isClosed()

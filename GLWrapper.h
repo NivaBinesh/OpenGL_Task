@@ -30,7 +30,7 @@ namespace GLWrapper
 		/**
 		* @brief Construct a GLWindow object with default values.
 		*
-		* Default Values : width:800, height:600, title:"My Triangle"
+		* Default Values : width:800, height:600, title:"Hello Triangle"
 		*/
 		GLWindow();
 
