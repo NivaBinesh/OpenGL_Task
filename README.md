@@ -55,8 +55,8 @@ g++ main.cpp GLWrapper.cpp glad.c -o OpenGLApp -lglfw -ldl
 
 1.Sample output with customized window and object color.
 
-![`Output 1`](output.PNG)
+![`Output 1`](outputs/output.PNG)
 
 2.Sample output with wireframe polygon enabled.
 
-![`Output 2`](Polygon.PNG)
+![`Output 2`](outputs/Polygon.PNG)
